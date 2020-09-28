@@ -28,8 +28,10 @@ module.exports = function transform(babel) {
                 }
             },
             FunctionDeclaration(path, state) {
+                const line = path.node.loc && path.node.loc.start.line || -1
+
                 if (state.file.opts.filename.includes('/correct-js/src/function') ||
-                    (path.node.id && path.node.id.name === "_interopRequireDefault")) return
+                    (path.node.id && path.node.id.name.startsWith("_") && line === -1)) return
 
                 const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
                 const params = path.node.params
@@ -46,7 +48,7 @@ module.exports = function transform(babel) {
                 const expression = t.callExpression(t.identifier('watchArguments'), [
                     t.stringLiteral(path.node.id && path.node.id.name || ''),
                     t.stringLiteral(fileId),
-                    t.numericLiteral(path.node.loc && path.node.loc.start.line || -1),
+                    t.numericLiteral(line),
                     t.booleanLiteral(hasRestElement),
                     paramValuesExpr,
                     t.identifier('arguments')

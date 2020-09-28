@@ -13,7 +13,11 @@ export default function (defaultContents, operators, typeId = null) {
 
     const struct =
         Object.create(operators, /* the proxy object can be set directly here */) |>
-        Object.assign(?, defaultContents, {__typeId: typeId})
+        Object.assign(?,
+            defaultContents,
+            {
+                __isTypeOf: [typeId]
+            })
 
     if (process?.env?.NODE_ENV !== 'production') {
         return protect(struct)
