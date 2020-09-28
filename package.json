@@ -1,0 +1,30 @@
+{
+  "name": "correct-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "babel src -d lib"
+  },
+  "keywords": [],
+  "author": "Anton Kats",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/template": "^7.10.4",
+    "@stdlib/stdlib": "0.0.92"
+  },
+  "devDependencies": {
+    "path": "^0.12.7",
+    "@babel/cli": "^7.11.6",
+    "@babel/plugin-proposal-export-default-from": "^7.10.4",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+    "@babel/plugin-proposal-partial-application": "^7.10.5",
+    "@babel/plugin-proposal-pipeline-operator": "^7.10.5",
+    "@babel/preset-env": "^7.11.5",
+    "babel-jest": "^26.3.0",
+    "babel-plugin-root-import": "^6.5.0",
+    "jest": "^26.4.2"
+  }
+}
