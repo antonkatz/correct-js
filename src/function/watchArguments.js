@@ -4,7 +4,7 @@ import throwError      from "./throwError"
 const tracker = new Map()
 
 export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs, givenArgs) {
-    const fnId = `${filePath}:${lineNumber}`
+    const fnId = `${fnName}:${filePath}:${lineNumber}`
 
     if (givenArgs.length < expectedArgs.length &&
         expectedArgs.slice(givenArgs.length).findIndex(e => e === undefined) >= 0) {
@@ -32,14 +32,12 @@ export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs
     let trackingInfo;
 
     if (tracker.has(fnId)) {
-        console.log("+")
         trackingInfo = tracker.get(fnId)
         const changeInLength = trackingInfo.compareLength(expectedArgs)
         if (changeInLength !== 0) {
             throwError(`Number of arguments has changed (by ${changeInLength}) at ${fnId}`)
         }
     } else {
-        console.log('&')
         trackingInfo = newTrackingInfo()
         tracker.set(fnId, trackingInfo)
     }

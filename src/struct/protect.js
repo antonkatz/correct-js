@@ -6,14 +6,14 @@ export function protect(struct) {
     return new Proxy(struct, {
         get: strictGet,
 
-        set: function () {
+        set: function (target, name, receiver) {
             throw new SyntaxError('Structs can only be changed by inner operations, they cannot be modified by external calls')
         }
     })
 }
 
 /** Makes sure that the properties exists on the struct */
-function strictGet (target, name) {
+function strictGet (target, name, receiver) {
     if (!(name in target)) {
         throw new TypeError('Struct has no such property: ' + name)
     }

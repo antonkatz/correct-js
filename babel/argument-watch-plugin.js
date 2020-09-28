@@ -28,10 +28,8 @@ module.exports = function transform(babel) {
                 }
             },
             FunctionDeclaration(path, state) {
-                // if (state.file.opts.filename.includes('function/watchArguments')) return
                 if (state.file.opts.filename.includes('/correct-js/src/function') ||
                     (path.node.id && path.node.id.name === "_interopRequireDefault")) return
-                console.log(state.file.opts.filename)
 
                 const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
                 const params = path.node.params
@@ -44,8 +42,6 @@ module.exports = function transform(babel) {
                     paramNames.map(n => t.identifier(n))
                 )
                 const hasRestElement = params.length > 0 && t.isRestElement(params[params.length - 1]) || false
-
-                console.log(paramNames)
 
                 const expression = t.callExpression(t.identifier('watchArguments'), [
                     t.stringLiteral(path.node.id && path.node.id.name || ''),

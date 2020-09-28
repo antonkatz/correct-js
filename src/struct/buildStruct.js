@@ -5,7 +5,7 @@ import checkContents from "./checkContents"
  *
  * Structs must have all the contents values defined, and the data can only be changed through calling an operation.
  * */
-export default function (defaultContents, operators) {
+export default function (defaultContents, operators, typeId = null) {
     checkContents(defaultContents)
 
     //fixme. shallow copy of `defaultContents` does not guarantee that some code
@@ -13,9 +13,7 @@ export default function (defaultContents, operators) {
 
     const struct =
         Object.create(operators, /* the proxy object can be set directly here */) |>
-        Object.assign(?, defaultContents)
-
-    struct.value = 0
+        Object.assign(?, defaultContents, {__typeId: typeId})
 
     if (process?.env?.NODE_ENV !== 'production') {
         return protect(struct)
