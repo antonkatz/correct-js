@@ -1,13 +1,17 @@
-import buildStruct from "../struct/buildStruct"
+import buildStruct  from "../struct/buildStruct"
+import buildFactory from "../struct/buildFactory"
+import noop       from "@stdlib/utils/noop"
 
-export default buildStruct({
+export default buildFactory({
+    thenTransformer: noop,
     _executionError: false
 }, {
-    then(op) {
+    then(resolve, reject) {
         try {
-            op(this)
+            resolve(this.thenTransformer(this))
         } catch (err) {
             this._executionError = err
+            reject(err)
         }
         return this
     },
