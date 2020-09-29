@@ -15,8 +15,8 @@
     "@stdlib/stdlib": "0.0.92"
   },
   "devDependencies": {
-    "path": "^0.12.7",
     "@babel/cli": "^7.11.6",
+    "@babel/plugin-proposal-do-expressions": "^7.10.4",
     "@babel/plugin-proposal-export-default-from": "^7.10.4",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
@@ -25,6 +25,7 @@
     "@babel/preset-env": "^7.11.5",
     "babel-jest": "^26.3.0",
     "babel-plugin-root-import": "^6.5.0",
-    "jest": "^26.4.2"
+    "jest": "^26.4.2",
+    "path": "^0.12.7"
   }
 }
