@@ -10,7 +10,7 @@ module.exports = function transform(babel) {
     const t = babel.types
 
     const importDeclaration = buildImport({
-        IMPORT_PATH: t.stringLiteral("correct-js/function/watchArguments")
+        IMPORT_PATH: t.stringLiteral("@onest.network/correct-js/lib/function/watchArguments")
     })
 
     return {

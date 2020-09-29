@@ -15,7 +15,9 @@ export function protect(struct) {
 /** Makes sure that the properties exists on the struct */
 function strictGet (target, name, receiver) {
     if (!(name in target)) {
-        throw new TypeError('Struct has no such property: ' + name)
+        const msg = 'Struct has no such property: ' + name
+        console.error(msg)
+        throw new TypeError(msg)
     }
     let v = target[name]
     if (isFunction(v)) {
