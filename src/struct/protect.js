@@ -3,20 +3,21 @@ import {isFunction} from '@stdlib/assert'
 /** [During development] it is beneficial to make sure that getting non-existent properties halts the program,
  * as well as changing data externally should also halt the program. */
 export default function protect(struct, noSet = true) {
-    return new Proxy(struct, {
+    const handler = {
         get: strictGet,
+    }
 
-        set: function (target, name, receiver) {
-            if (noSet) {
-                throw new SyntaxError('Structs can only be changed by inner operations, they cannot be modified by external calls')
-            }
-            return true
+    if (noSet) {
+        handler.set = function (target, name, receiver) {
+            throw new SyntaxError('Structs can only be changed by inner operations, they cannot be modified by external calls')
         }
-    })
+    }
+
+    return new Proxy(struct, handler)
 }
 
 /** Makes sure that the properties exists on the struct */
-function strictGet (target, name, receiver) {
+function strictGet(target, name, receiver) {
     if (!(name in target)) {
         const msg = 'Struct has no such property: ' + name
         const error = new TypeError(msg)
