@@ -35,9 +35,12 @@ module.exports = function transform(babel) {
 
                 const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
                 const params = path.node.params
-                const paramNames = params.map(p => {
+
+                const paramNames = params.flatMap(p => {
                     return p.name ||
                         (p.left && p.left.name) || // in case of default params
+                        (p.left && extractObjectPattern(p.left))
+                        (p.type === "ObjectPattern" && extractObjectPattern(p))
                         (p.argument && p.argument.name) // in case of spread syntax
                 })
                 const paramValuesExpr = t.arrayExpression(
@@ -58,4 +61,8 @@ module.exports = function transform(babel) {
             }
         }
     }
+}
+
+function extractObjectPattern(pattern) {
+    console.log(pattern.properties) //fixme complete
 }

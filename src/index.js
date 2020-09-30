@@ -1,2 +1,7 @@
-export buildStruct from './struct/buildStruct'
-export buildFactory from './struct/buildFactory'
+import buildStruct from './struct/buildStruct'
+import buildFactory from './struct/buildFactory'
+
+export {
+    buildFactory,
+    buildStruct
+}
