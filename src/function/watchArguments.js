@@ -31,7 +31,9 @@ export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs
                 isTooMany = true
             }
         }
-        if (isTooMany) throwError(`More arguments given than expected ${fnId}`)
+        if (isTooMany) {
+            throwError(`More arguments given than expected ${fnId}`)
+        }
     }
 
     let trackingInfo;
@@ -39,7 +41,7 @@ export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs
     if (tracker.has(fnId)) {
         trackingInfo = tracker.get(fnId)
         // fixme this does not actually track a change
-        const changeInLength = trackingInfo.compareLength(expectedArgs)
+        const changeInLength = trackingInfo.compareSize(args)
         if (changeInLength !== 0) {
             throwError(`Number of arguments has changed (by ${changeInLength}) at ${fnId}`)
         }
@@ -48,5 +50,5 @@ export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs
         tracker.set(fnId, trackingInfo)
     }
 
-    trackingInfo.updateWithArgs(expectedArgs)
+    trackingInfo.updateArgs(args)
 }

@@ -47,6 +47,8 @@ module.exports = function transform(babel) {
                 )
                 const hasRestElement = params.length > 0 && t.isRestElement(params[params.length - 1]) || false
 
+                console.log()
+
                 const expression = t.callExpression(t.identifier('watchArguments'), [
                     t.stringLiteral(path.node.id && path.node.id.name || ''),
                     t.stringLiteral(fileId),

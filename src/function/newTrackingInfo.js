@@ -1,11 +1,13 @@
 export default function () {
     return {
-        argsLength: -1,
-        updateWithArgs(args) {
-            this.argsLength = args.length
+        lastArgs: null,
+
+        updateArgs(args) {
+            this.lastArgs = args
         },
-        compareLength(args) {
-            return args.length - this.argsLength
+
+        compareSize(args) {
+            return args.definedSize() - this.lastArgs.definedSize()
         }
     }
 }
