@@ -1,3 +1,5 @@
+import {rename} from "./renameKey"
+
 export default function (givenContents) {
     const keys = Object.keys(givenContents)
     return function () {
@@ -14,10 +16,3 @@ export default function (givenContents) {
     }
 }
 
-function rename(key) {
-    if (key.startsWith("$")) {
-        return key.slice(1)
-    } else {
-        return key
-    }
-}

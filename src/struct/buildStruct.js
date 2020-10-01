@@ -1,6 +1,6 @@
 import protect             from "./protect"
 import checkContents       from "./checkContents"
-import getContents         from "./getContents"
+import getContents         from "./contents/getContents"
 import checkInitialization from "./checkInitialization"
 
 /** Creates a new struct given the shape of the data (aka contents) that it holds and the operations that can be performed on those contents.

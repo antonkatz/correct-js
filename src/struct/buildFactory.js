@@ -1,5 +1,6 @@
-import buildStruct from "./buildStruct"
-import noop from "@stdlib/utils/noop"
+import buildStruct    from "./buildStruct"
+import noop           from "@stdlib/utils/noop"
+import importContents from "./contents/importContents"
 
 export default function buildFactory(defaultContents, operators, initializer = noop) {
     const factoryStruct = buildStruct({
@@ -26,6 +27,14 @@ export default function buildFactory(defaultContents, operators, initializer = n
 
                     // fixme. make awaitable
                 })
+        },
+
+        fromContents(contents) {
+            const remappedContents = importContents(contents, this.defaultContents)
+            return buildStruct({
+                ...this.defaultContents,
+                ...remappedContents
+            }, this.operators, null, {typeIds: this.__isTypeOf, factory: this})
         }
     })
 
@@ -39,6 +48,7 @@ function makeCallable(factoryStruct) {
     }
 
     factory.mixin = factoryStruct.mixin.bind(factoryStruct)
+    factory.fromContents = factoryStruct.fromContents
     factory.__factory = factoryStruct
 
     return factory
