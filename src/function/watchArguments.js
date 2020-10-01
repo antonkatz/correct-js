@@ -9,7 +9,7 @@ export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs
     const fnId = `${fnName}:${filePath}:${lineNumber}`
 
     const args = Args(expectedArgs)
-    Logger.logFunctionCall(fnName, filePath, args)
+    Logger.logFunctionCall(fnName, filePath, lineNumber, args)
 
     if (givenArgs.length < args.count() &&
         expectedArgs.slice(givenArgs.length).findIndex(e => e[1] === undefined) >= 0) {
@@ -20,7 +20,7 @@ export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs
             isTooMany = true
         } else {
             if (hasRestElem) {
-                const last = expectedArgs[expectedArgs.length - 1]
+                const last = expectedArgs[expectedArgs.length - 1][1]
                 // in case of a spread operator
                 if (!Array.isArray(last)) {
                     isTooMany = true

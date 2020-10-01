@@ -5,6 +5,9 @@ export default function (_babel) {
         },
         count() {
             _babel.length
+        },
+        serialize() {
+            return this.args.entries() |> Array.from |> Object.fromEntries
         }
     }) |>
         Object.assign(?, {args: new Map(_babel)})
