@@ -2,6 +2,7 @@ import protect             from "./protect"
 import checkContents       from "./checkContents"
 import getContents         from "./contents/getContents"
 import checkInitialization from "./checkInitialization"
+import {isFunction}          from '@stdlib/assert'
 
 /** Creates a new struct given the shape of the data (aka contents) that it holds and the operations that can be performed on those contents.
  *
@@ -32,9 +33,19 @@ export default function (contents, operators, initializer = null,
     }
 
     return Object.create(prototype, /* the proxy object can be set directly here */) |>
+        bindAll |>
         Object.assign(?, properties) |>
         initialize(?, initializer) |>
         checkInitializationOpt
+}
+
+/* fixme. ??? make a handler getter for functions */
+function bindAll(struct) {
+    for (const prop in struct) {
+        const v = struct[prop]
+        if (isFunction(v)) struct[prop] = v.bind(struct)
+    }
+    return struct
 }
 
 /** Allows for awaitable and nullable constructors */
@@ -62,7 +73,8 @@ function nullify(initializerResult, struct) {
     return struct
 }
 
-const IS_PROD = process?.env?.NODE_ENV === 'production'
+const IS_PROD = process?.env?.NODE_ENV === 'production' ||
+    process?.env?.CORRECT_ENV === 'production'
 
 function protectOpt(struct, noSet = true) {
     if (!IS_PROD && struct !== undefined) {
