@@ -1,15 +1,17 @@
 import newTrackingInfo from "./newTrackingInfo"
 import throwError      from "./throwError"
+import Logger          from "./Logger"
+import Args            from "./Args"
 
 const tracker = new Map()
 
 export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs, givenArgs) {
     const fnId = `${fnName}:${filePath}:${lineNumber}`
 
-    const expectedArgsCount = expectedArgs.length
-    const expectedArgsDict = Object.fromEntries(expectedArgs)
+    const args = Args(expectedArgs)
+    Logger.logFunctionCall(fnName, filePath, args)
 
-    if (givenArgs.length < expectedArgsCount &&
+    if (givenArgs.length < args.count() &&
         expectedArgs.slice(givenArgs.length).findIndex(e => e[1] === undefined) >= 0) {
         throwError(`Less arguments given than expected ${fnId}`)
     } else if (givenArgs.length > expectedArgs.length) {
@@ -36,6 +38,7 @@ export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs
 
     if (tracker.has(fnId)) {
         trackingInfo = tracker.get(fnId)
+        // fixme this does not actually track a change
         const changeInLength = trackingInfo.compareLength(expectedArgs)
         if (changeInLength !== 0) {
             throwError(`Number of arguments has changed (by ${changeInLength}) at ${fnId}`)

@@ -6,6 +6,7 @@ const buildImport = template(`
 `)
 
 module.exports = function transform(babel) {
+    console.log("Correct JS env: ", process.env.NODE_ENV)
     if (process.env.NODE_ENV === 'production') return {}
 
     const t = babel.types

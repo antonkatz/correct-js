@@ -1,8 +1,8 @@
 import protect             from "./protect"
 import checkContents       from "./checkContents"
-import getContents         from "./contents/getContents"
 import checkInitialization from "./checkInitialization"
-import {isFunction}          from '@stdlib/assert'
+import {isFunction}        from '@stdlib/assert'
+import buildContentsGetter from "./contents/buildContentsGetter"
 
 /** Creates a new struct given the shape of the data (aka contents) that it holds and the operations that can be performed on those contents.
  *
@@ -18,9 +18,12 @@ export default function (contents, operators, initializer = null,
     //fixme. shallow copy of `contents` does not guarantee that some code
     // elsewhere is not going change inner values (such as pushing into an array)
 
+    const getContents = buildContentsGetter(contents)
     const prototype = {
         ...operators,
-        Contents: getContents(contents)
+        get Contents() {
+            return getContents(this)
+        }
     }
     if (factory) prototype.__factory == factory
 
@@ -28,6 +31,7 @@ export default function (contents, operators, initializer = null,
         ...contents,
         __structId: structId,
         __isTypeOf: typeIds,
+        // __getContents: buildContentsGetter(contents)
         // __operators: operators,
         // __initializer: initializer,
     }
