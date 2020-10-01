@@ -6,8 +6,11 @@ const tracker = new Map()
 export default function (fnName, filePath, lineNumber, hasRestElem, expectedArgs, givenArgs) {
     const fnId = `${fnName}:${filePath}:${lineNumber}`
 
-    if (givenArgs.length < expectedArgs.length &&
-        expectedArgs.slice(givenArgs.length).findIndex(e => e === undefined) >= 0) {
+    const expectedArgsCount = expectedArgs.length
+    const expectedArgsDict = Object.fromEntries(expectedArgs)
+
+    if (givenArgs.length < expectedArgsCount &&
+        expectedArgs.slice(givenArgs.length).findIndex(e => e[1] === undefined) >= 0) {
         throwError(`Less arguments given than expected ${fnId}`)
     } else if (givenArgs.length > expectedArgs.length) {
         let isTooMany;

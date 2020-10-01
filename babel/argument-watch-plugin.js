@@ -1,3 +1,4 @@
+const extractArgumentName = require("./extractArgumentName").default
 const template = require("@babel/template").default
 
 const buildImport = template(`
@@ -36,15 +37,12 @@ module.exports = function transform(babel) {
                 const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
                 const params = path.node.params
 
-                const paramNames = params.flatMap(p => {
-                    return p.name ||
-                        (p.left && p.left.name) || // in case of default params
-                        (p.left && extractObjectPattern(p.left))
-                        (p.type === "ObjectPattern" && extractObjectPattern(p))
-                        (p.argument && p.argument.name) // in case of spread syntax
-                })
+                console.log('\n\n', fileId, '>>>')
+
+                const paramNames = params.flatMap(extractArgumentName)
+                console.log(paramNames)
                 const paramValuesExpr = t.arrayExpression(
-                    paramNames.map(n => t.identifier(n))
+                    paramNames.map(n => t.arrayExpression([t.stringLiteral(n), t.identifier(n)]))
                 )
                 const hasRestElement = params.length > 0 && t.isRestElement(params[params.length - 1]) || false
 
@@ -61,8 +59,4 @@ module.exports = function transform(babel) {
             }
         }
     }
-}
-
-function extractObjectPattern(pattern) {
-    console.log(pattern.properties) //fixme complete
 }

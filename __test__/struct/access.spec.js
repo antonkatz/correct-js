@@ -22,6 +22,6 @@ describe("Access patterns on a struct", () => {
             }
         )
 
-        expect(TestStruct.Contents).toEqual({value: 0})
+        expect(TestStruct.Contents()).toEqual({value: 0})
     })
 })
