@@ -1,15 +1,24 @@
-import {isFunction} from '@stdlib/assert'
+import {isFunction}          from '@stdlib/assert'
+import getSettableProperties from "./getSettableProperties"
 
 /** [During development] it is beneficial to make sure that getting non-existent properties halts the program,
  * as well as changing data externally should also halt the program. */
-export default function protect(struct, noSet = true) {
+export default function protect(struct, external = true) {
+    const settableKeys = getSettableProperties(struct)
+
     const handler = {
         get: strictGet,
     }
-
-    if (noSet) {
-        handler.set = function (target, name, receiver) {
+    handler.set = function (target, name, value, receiver) {
+        if (external) {
             throw new SyntaxError('Structs can only be changed by inner operations, they cannot be modified by external calls')
+        } else {
+            if (!settableKeys.includes(name)) {
+                throw new SyntaxError(`Not allowed to set key ${k}`)
+            } else {
+                target[name] = value
+                return true
+            }
         }
     }
 

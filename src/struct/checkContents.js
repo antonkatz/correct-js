@@ -1,7 +1,25 @@
-export default function (defaultContents) {
-    for (const [k,v] of Object.entries(defaultContents)) {
-        if (v === null) throw new TypeError(`Struct's contents must have non-null values. Error on key $${k}`)
+export default function (contents, defaultContent = null) {
+    if (!contents) throw new TypeError("Contents must be defined")
+    let missingKeys
+    if (defaultContent) {
+        missingKeys = new Set(
+            Object.entries(defaultContent)
+                .filter(([k, v]) => v == null && !k.startsWith("$"))
+                .map(([k]) => k)
+        )
     }
-    // fixme flag extra values
-    // fixme flag values that must be given on creation
+
+    for (const [k, v] of Object.entries(contents)) {
+        if (k === "$" || k === "_" || k === "__") throw new SyntaxError(`Key name cannot be only '$' or '_' or '__'`)
+        if (defaultContent) {
+            if (!(k in defaultContent)) throw new TypeError(`Unknown key in struct's content:${k}`)
+            if (v != null || defaultContent[k] != null) missingKeys.delete(k)
+        } else {
+            if (v == null) throw new TypeError(`Struct's contents must have only defined values, since it has no defaults. Error on key $${k}`)
+        }
+    }
+
+    if (missingKeys && missingKeys.size > 0) {
+        throw new TypeError(`Struct is missing content keys: ${missingKeys}`)
+    }
 }
