@@ -78,7 +78,7 @@ function nullify(initializerResult, struct) {
 }
 
 const IS_PROD = process?.env?.NODE_ENV === 'production' ||
-    process?.env?.CORRECT_ENV === 'production'
+    process?.env?.CORRECT_JS_ENV === 'production'
 
 function protectOpt(struct, noSet = true) {
     if (!IS_PROD && struct !== undefined) {

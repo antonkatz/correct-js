@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 var fifo = require('@stdlib/utils/fifo')
+var isFunction = require('@stdlib/assert/is-function')
 const recursive = require("recursive-readdir")
 
 const EXT = ".cjslog"
@@ -41,9 +42,25 @@ export default Object.create({
     },
 
     formatFuncLog(name, lineNumber, args) {
-        return `<<< ${name} (${lineNumber})\n` + JSON.stringify(args, null, 2) + "\n\n"
+        return `<<< ${name} (${lineNumber})\n` + JSON.stringify(serializeObject(args), null, 2) + "\n\n"
     }
 })
+
+function serializeObject(obj, depth = 0) {
+    if (Array.isArray(obj)) {
+        return obj.map(serializeObject)
+    } else if (isFunction(obj)) {
+        return "Function"
+    } else if (typeof obj === 'object') {
+        const s = {}
+        for (const p in obj) {
+            s[p] = depth >= 5 ? "..." : serializeObject(obj[p], depth + 1)
+        }
+        return s
+    } else {
+        return obj
+    }
+}
 
 async function deleteExisting() {
     const files = await recursive(".",
