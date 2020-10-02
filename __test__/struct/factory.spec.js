@@ -1,5 +1,4 @@
 import buildFactory from "../../src/struct/buildFactory"
-import TestStruct   from "./TestStruct"
 
 describe("Factory", () => {
     const F1 = buildFactory({value: 1}, {})

@@ -46,8 +46,15 @@ export default Object.create({
 })
 
 function serializeObject(obj, depth = 0) {
+    if (obj == null) return obj
+
     if (Array.isArray(obj)) {
         return obj.map(serializeObject)
+    } else if (obj.__structId) { // fixme. make more difined
+        return {
+            Contents: serializeObject(obj.Contents),
+            Methods: Object.keys(Object.getPrototypeOf(obj))
+        }
     } else if (isFunction(obj)) {
         return "Function"
     } else if (typeof obj === 'object') {
