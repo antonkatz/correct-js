@@ -14,6 +14,7 @@ module.exports = function transform(babel) {
     const importDeclaration = buildImport({
         IMPORT_PATH: t.stringLiteral("@onest.network/correct-js/lib/function/watchArguments")
     })
+    const functionVisitor = (path, state) => prependWatchToBody(t, path, state)
 
     return {
         visitor: {
@@ -30,36 +31,44 @@ module.exports = function transform(babel) {
                 }
             },
             FunctionDeclaration(path, state) {
-                const line = path.node.loc && path.node.loc.start.line || -1
-
-                if (state.file.opts.filename.includes('/correct-js/src/function') ||
-                    (path.node.id && path.node.id.name.startsWith("_") && line === -1)) return
-
-                const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
-                const params = path.node.params
-
-                console.log('\n\n', fileId, '>>>')
-
-                const paramNames = params.flatMap(extractArgumentName)
-                console.log(paramNames)
-                const paramValuesExpr = t.arrayExpression(
-                    paramNames.map(n => t.arrayExpression([t.stringLiteral(n), t.identifier(n)]))
-                )
-                const hasRestElement = params.length > 0 && t.isRestElement(params[params.length - 1]) || false
-
-                console.log()
-
-                const expression = t.callExpression(t.identifier('watchArguments'), [
-                    t.stringLiteral(path.node.id && path.node.id.name || ''),
-                    t.stringLiteral(fileId),
-                    t.numericLiteral(line),
-                    t.booleanLiteral(hasRestElement),
-                    paramValuesExpr,
-                    t.identifier('arguments')
-                ])
-
-                path.get('body').unshiftContainer('body', t.expressionStatement(expression))
-            }
+                functionVisitor(path, state)
+            },
+            ObjectMethod(path, state) {
+                console.log("* ObjectMethod")
+                functionVisitor(path, state)
+            },
         }
     }
+}
+
+function prependWatchToBody(t, path, state) {
+    const line = path.node.loc && path.node.loc.start.line || -1
+
+    if (state.file.opts.filename.includes('/correct-js/src/function') ||
+        (path.node.id && path.node.id.name.startsWith("_") && line === -1)) return
+
+    const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
+    const params = path.node.params
+
+    console.log('\n\n', fileId, '>>>')
+
+    const paramNames = params.flatMap(extractArgumentName)
+    console.log(paramNames)
+    const paramValuesExpr = t.arrayExpression(
+        paramNames.map(n => t.arrayExpression([t.stringLiteral(n), t.identifier(n)]))
+    )
+    const hasRestElement = params.length > 0 && t.isRestElement(params[params.length - 1]) || false
+
+    console.log()
+
+    const expression = t.callExpression(t.identifier('watchArguments'), [
+        t.stringLiteral(path.node.id && path.node.id.name || ''),
+        t.stringLiteral(fileId),
+        t.numericLiteral(line),
+        t.booleanLiteral(hasRestElement),
+        paramValuesExpr,
+        t.identifier('arguments')
+    ])
+
+    path.get('body').unshiftContainer('body', t.expressionStatement(expression))
 }
