@@ -1,7 +1,7 @@
 import newTrackingInfo from "./newTrackingInfo"
-import throwError      from "./throwError"
-import Logger          from "./Logger"
-import Args            from "./Args"
+import throwError from "./throwError"
+import Logger     from "./logging/Logger"
+import Args       from "./Args"
 
 const tracker = new Map()
 

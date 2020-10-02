@@ -1,13 +1,12 @@
+import {EXT}      from "./const"
+import deleteLogs from './deleteLogs'
+
 const fs = require('fs')
-const path = require('path')
 var fifo = require('@stdlib/utils/fifo')
 var isFunction = require('@stdlib/assert/is-function')
-const recursive = require("recursive-readdir")
-
-const EXT = ".cjslog"
 
 export default Object.create({
-    // beforeRun: deleteExisting(),
+    // beforeRun: deleteLogs(),
     isWriting: false,
     queue: fifo(),
     openedFiles: new Set(),
@@ -62,20 +61,3 @@ function serializeObject(obj, depth = 0) {
     }
 }
 
-async function deleteExisting() {
-    const files = await recursive(".",
-        ["*node_modules/*", ignoreHiddenDirs, ignoreNonLogs])
-    const deleteOps = files.map(f => new Promise((resolve, reject) => {
-        fs.unlink(f, reject)
-        resolve()
-    }))
-    await Promise.all(deleteOps)
-}
-
-function ignoreHiddenDirs(file, stats) {
-    return stats.isDirectory() && path.basename(file).startsWith('.')
-}
-
-function ignoreNonLogs(file, stats) {
-    return stats.isFile() && path.extname(file) !== EXT
-}
