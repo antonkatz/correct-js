@@ -28,7 +28,12 @@ export default function protect(struct, external = true) {
 /** Makes sure that the properties exists on the struct */
 function strictGet(target, name, receiver) {
     if (!(name in target)) {
-        const msg = 'Struct has no such property: ' + name
+        let msg = 'Struct has no such property: '
+        try {
+            msg += name.toString()
+        } catch (e) {
+            console.warn("Could not provide key because", e)
+        }
         const error = new TypeError(msg)
 
         const relevantTrace = error.stack.split('\n').slice(2)
