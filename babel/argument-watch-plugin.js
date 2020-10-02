@@ -45,7 +45,10 @@ function prependWatchToBody(t, path, state) {
     const line = path.node.loc && path.node.loc.start.line || -1
 
     if (state.file.opts.filename.includes('/correct-js/src/function') ||
-        (path.node.id && path.node.id.name.startsWith("_") && line === -1)) return
+        (path.node.id && path.node.id.name.startsWith("_") && line === -1) ||
+        // fixme. Logger gets into an infinite loop with Contents
+        !state.file.opts.filename.includes('/correct-js/src/struct/buildStruct')
+    ) return
 
     const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
     const params = path.node.params
