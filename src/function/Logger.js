@@ -7,7 +7,7 @@ const recursive = require("recursive-readdir")
 const EXT = ".cjslog"
 
 export default Object.create({
-    beforeRun: deleteExisting(),
+    // beforeRun: deleteExisting(),
     isWriting: false,
     queue: fifo(),
     openedFiles: new Set(),
@@ -15,13 +15,13 @@ export default Object.create({
     logFunctionCall(name, file, lineNumber, Args) {
 
         this.queue.push({file: file + EXT, data: this.formatFuncLog(name, lineNumber, Args.serialize())})
-        // console.log('>>>', name, this.queue.length)
+        console.log('>>>', name, this.queue.length)
 
         this.writeNext()
     },
 
     async writeNext(tailCall = false) {
-        await this.beforeRun
+        // await this.beforeRun
 
         if (this.isWriting && !tailCall) return
 
@@ -30,7 +30,7 @@ export default Object.create({
         if (!this.isWriting) return
 
         const {file, data} = this.queue.pop()
-        // console.log('<<<', this.queue.length)
+        console.log('<<<', this.queue.length)
 
         if (this.openedFiles.has(file)) {
             fs.appendFileSync(file, data)

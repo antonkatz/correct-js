@@ -14,7 +14,7 @@ module.exports = function transform(babel) {
     const importDeclaration = buildImport({
         IMPORT_PATH: t.stringLiteral("@onest.network/correct-js/lib/function/watchArguments")
     })
-    const functionVisitor = (path, state) => prependWatchToBody(t, path, state)
+    const functionVisitor = (id, path, state) => prependWatchToBody(t, id, path, state)
 
     return {
         visitor: {
@@ -31,23 +31,23 @@ module.exports = function transform(babel) {
                 }
             },
             FunctionDeclaration(path, state) {
-                functionVisitor(path, state)
+                functionVisitor(path.node.id, path, state)
             },
             ObjectMethod(path, state) {
-                console.log("* ObjectMethod")
-                functionVisitor(path, state)
+                console.log("* ObjectMethod", path.node.key.name, state.file.opts.filename)
+                functionVisitor(path.node.key, path, state)
             },
         }
     }
 }
 
-function prependWatchToBody(t, path, state) {
+function prependWatchToBody(t, id, path, state) {
     const line = path.node.loc && path.node.loc.start.line || -1
 
     if (state.file.opts.filename.includes('/correct-js/src/function') ||
-        (path.node.id && path.node.id.name.startsWith("_") && line === -1) ||
+        (id && id.name.startsWith("_") && line === -1) ||
         // fixme. Logger gets into an infinite loop with Contents
-        !state.file.opts.filename.includes('/correct-js/src/struct/buildStruct')
+        state.file.opts.filename.includes('/correct-js/src/struct/buildStruct')
     ) return
 
     const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
@@ -65,7 +65,7 @@ function prependWatchToBody(t, path, state) {
     console.log()
 
     const expression = t.callExpression(t.identifier('watchArguments'), [
-        t.stringLiteral(path.node.id && path.node.id.name || ''),
+        t.stringLiteral(id && id.name || ''),
         t.stringLiteral(fileId),
         t.numericLiteral(line),
         t.booleanLiteral(hasRestElement),
