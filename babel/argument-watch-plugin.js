@@ -34,7 +34,7 @@ module.exports = function transform(babel) {
                 functionVisitor(path.node.id, path, state)
             },
             ObjectMethod(path, state) {
-                console.log("* ObjectMethod", path.node.key.name, state.file.opts.filename)
+                // console.log("* ObjectMethod", path.node.key.name, state.file.opts.filename)
                 functionVisitor(path.node.key, path, state)
             },
         }
@@ -55,7 +55,7 @@ function prependWatchToBody(t, id, path, state) {
     const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
     const params = path.node.params
 
-    console.log('\n\n', fileId, '>>>')
+    // console.log('\n\n', fileId, '>>>')
 
     const paramNames = params.flatMap(extractArgumentName)
     console.log(paramNames)
@@ -64,7 +64,7 @@ function prependWatchToBody(t, id, path, state) {
     )
     const hasRestElement = params.length > 0 && t.isRestElement(params[params.length - 1]) || false
 
-    console.log()
+    // console.log()
 
     const expression = t.callExpression(t.identifier('watchArguments'), [
         t.stringLiteral(id && id.name || ''),
