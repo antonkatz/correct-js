@@ -38,21 +38,23 @@ function strictGet(target, name, receiver) {
 
         const relevantTrace = error.stack.split('\n').slice(2)
 
-        // if the stack trace is absent, and the function call is `then` -- skip
-        let skip = relevantTrace.length === 0 && name === 'then'
-        for (const line of relevantTrace) {
-            if (line.includes('/') &&
-                (line.includes('/node_modules/') || line.includes("internal/process"))) {
-                skip = true
-                break
+        if (name !== "then") { // promiselike checking is so pervasive, that this needs to be skipped entirely
+            // if the stack trace is absent, and the function is called from external lib -- skip
+            let skip = relevantTrace.length === 0
+            for (const line of relevantTrace) {
+                if (line.includes('/')) {
+                    // checking that the first line is external
+                    skip = line.includes('/node_modules/') || line.includes("internal/process")
+                    break
+                }
             }
-        }
-        if (skip) {
-            console.info(msg, error.stack)
-        } else {
-            debugger
-            console.error(msg)
-            throw error
+            if (skip) {
+                console.info(msg, error.stack)
+            } else {
+                debugger
+                console.error(msg)
+                throw error
+            }
         }
     }
     let v = target[name]
