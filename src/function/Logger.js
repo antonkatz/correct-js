@@ -4,6 +4,7 @@ var fifo = require( '@stdlib/utils/fifo' );
 export default Object.create({
     isWriting: false,
     queue: fifo(),
+    openedFiles: new Set(),
 
     logFunctionCall(name, file, lineNumber, Args) {
         this.queue.push({file: file + ".cjslog", data: this.formatFuncLog(name, lineNumber, Args.serialize())})
@@ -22,7 +23,12 @@ export default Object.create({
         const {file, data} = this.queue.pop()
         console.log('<<<', this.queue.length)
 
-        fs.appendFileSync(file, data);
+        if (this.openedFiles.has(file)) {
+            fs.appendFileSync(file, data);
+        } else {
+            fs.writeFileSync(file, data)
+            this.openedFiles.add(file)
+        }
         return await this.writeNext(true)
     },
 
