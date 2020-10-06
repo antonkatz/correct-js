@@ -58,7 +58,7 @@ function prependWatchToBody(t, id, path, state) {
     // console.log('\n\n', fileId, '>>>')
 
     const paramNames = params.flatMap(extractArgumentName)
-    console.log(paramNames)
+    // console.log(paramNames)
     const paramValuesExpr = t.arrayExpression(
         paramNames.map(n => t.arrayExpression([t.stringLiteral(n), t.identifier(n)]))
     )
