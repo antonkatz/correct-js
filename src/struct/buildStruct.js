@@ -3,6 +3,7 @@ import checkContents       from "./checkContents"
 import checkInitialization from "./checkInitialization"
 import {isFunction}        from '@stdlib/assert'
 import buildContentsGetter from "./contents/buildContentsGetter"
+import {nullify}           from "./initialization/nullifyStruct"
 
 /** Creates a new struct given the shape of the data (aka contents) that it holds and the operations that can be performed on those contents.
  *
@@ -40,8 +41,7 @@ export default function (contents, operators, initializer = null,
     return Object.create(prototype, /* the proxy object can be set directly here */) |>
         // bindAll |>
         Object.assign(?, properties) |>
-        initialize(?, initializer) |>
-        checkInitializationOpt(?, defaultContents)
+        initialize(?, initializer, defaultContents)
 }
 
 /* fixme. ??? make a handler getter for functions */
@@ -54,7 +54,7 @@ function bindAll(struct) {
 }
 
 /** Allows for awaitable and nullable constructors */
-function initialize(struct, initializer) {
+function initialize(struct, initializer, defaultContents) {
     if (initializer) {
         // important, otherwise will be bound to the factory
         // struct.__initializer = struct.__initializer.bind(struct)
@@ -62,20 +62,13 @@ function initialize(struct, initializer) {
         if (ready?.then) {
             const p = Promise.resolve(ready)
             const n = p.then(nullify(?, struct))
-            return n.then(protectOpt)
+            return n.then(checkInitializationOpt(?, defaultContents)).then(protectOpt)
         } else {
-            return nullify(ready, struct) |> protectOpt
+            return nullify(ready, struct) |> checkInitializationOpt(?, defaultValue) |> protectOpt
         }
     } else {
-        return protectOpt(struct)
+        return checkInitializationOpt(struct, defaultContents) |> protectOpt
     }
-}
-
-function nullify(initializerResult, struct) {
-    if (initializerResult !== undefined && !initializerResult) {
-        return undefined
-    }
-    return struct
 }
 
 const IS_PROD = process?.env?.NODE_ENV === 'production' ||
