@@ -15,19 +15,25 @@ export default function buildFactory(defaultContents, operators, initializer = n
             }, this.operators, this.initializer, {typeIds: this.__isTypeOf, factory: this})
         },
 
-        mixin(other) {
+        mixWith(other) {
+            this.mix(other.__factory.defaultContents, other.__factory.operators, other.__factory.initializer)
+        },
+
+        mix(oDefaultContents, oOperators, oInitializer) {
             const _self = this
             const initializer = this.initializer
             return buildFactory(
-                {...this.defaultContents, ...other.__factory.defaultContents},
-                {...this.operators, ...other.__factory.operators},
+                {...this.defaultContents, ...oDefaultContents},
+                {...this.operators, ...oOperators},
                 () => {
                     _self.initializer && initializer.bind(this)()
-                    other.__factory.initializer && other.__factory.initializer.bind(this)()
+                    oInitializer && oInitializer.bind(this)()
 
                     // fixme. make awaitable
                 })
         },
+
+
 
         fromContents(contents) {
             const remappedContents = importContents(contents, this.defaultContents)
@@ -41,13 +47,17 @@ export default function buildFactory(defaultContents, operators, initializer = n
     return makeCallable(factoryStruct)
 }
 
+// todo. Static ops / non-object ops can be added onto the function or produced by Factory(factory_child) = static ops
 
 function makeCallable(factoryStruct) {
     function factory(contents = {}) {
         return factoryStruct.build(contents)
     }
 
-    factory.mixin = factoryStruct.mixin.bind(factoryStruct)
+    factory.mixWith = factoryStruct.mixWith.bind(factoryStruct)
+    factory.mix = factoryStruct.mix.bind(factoryStruct)
+    // todo
+    // factory.addCompanionOps
     factory.fromContents = factoryStruct.fromContents
     factory.__factory = factoryStruct
 
