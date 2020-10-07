@@ -10,7 +10,8 @@ import buildContentsGetter from "./contents/buildContentsGetter"
  * */
 export default function (contents, operators, initializer = null,
                          {typeIds = [], factory = null} = {}) {
-    checkContentsOpt(contents, factory ? factory.defaultContents : null)
+    const defaultContents = factory ? factory.defaultContents : null
+    checkContentsOpt(contents, defaultContents)
 
     const structId = Symbol()
     typeIds = typeIds.length > 0 ? typeIds : [structId]
@@ -25,7 +26,7 @@ export default function (contents, operators, initializer = null,
             return getContents(this)
         }
     }
-    if (factory) prototype.__factory == factory
+    if (factory) prototype.__factory = factory
 
     const properties = {
         ...contents,
@@ -37,10 +38,10 @@ export default function (contents, operators, initializer = null,
     }
 
     return Object.create(prototype, /* the proxy object can be set directly here */) |>
-        bindAll |>
+        // bindAll |>
         Object.assign(?, properties) |>
         initialize(?, initializer) |>
-        checkInitializationOpt
+        checkInitializationOpt(?, defaultContents)
 }
 
 /* fixme. ??? make a handler getter for functions */
@@ -95,10 +96,10 @@ function checkContentsOpt(contents, defaults = null) {
     }
 }
 
-function checkInitializationOpt(struct) {
+function checkInitializationOpt(struct, defaultContents = null) {
     if (!IS_PROD && struct !== undefined) {
         // throws
-        checkInitialization(struct)
+        checkInitialization(struct, defaultContents)
     }
     return struct
 }

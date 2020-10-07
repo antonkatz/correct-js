@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "description": "",
   "main": "lib/index.js",
+  "types": "typings/index.d.ts",
   "scripts": {
     "test": "jest",
     "build": "babel src -d lib"
