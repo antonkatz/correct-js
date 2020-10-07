@@ -1,6 +1,10 @@
 import {isFunction}          from '@stdlib/assert'
 import getSettableProperties from "./getSettableProperties"
 
+//todo.
+// add a `shed` feature (invalidate currently held pointers) [done by returning a new proxy]
+
+
 /** [During development] it is beneficial to make sure that getting non-existent properties halts the program,
  * as well as changing data externally should also halt the program. */
 export default function protect(struct, external = true) {
@@ -14,7 +18,7 @@ export default function protect(struct, external = true) {
             throw new SyntaxError('Structs can only be changed by inner operations, they cannot be modified by external calls')
         } else {
             if (!settableKeys.includes(name)) {
-                throw new SyntaxError(`Not allowed to set key ${k}`)
+                throw new SyntaxError(`Not allowed to set key ${name}. Does it exist?`)
             } else {
                 target[name] = value
                 return true
@@ -51,7 +55,6 @@ function strictGet(target, name, receiver) {
             if (skip) {
                 console.info(msg, error.stack)
             } else {
-                debugger
                 console.error(msg)
                 throw error
             }
