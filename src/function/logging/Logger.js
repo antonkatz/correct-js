@@ -4,6 +4,7 @@ import deleteLogs from './deleteLogs'
 const fs = require('fs')
 var fifo = require('@stdlib/utils/fifo')
 var isFunction = require('@stdlib/assert/is-function')
+var isPrimitive = require('@stdlib/assert/is-primitive')
 
 export default Object.create({
     // beforeRun: deleteLogs(),
@@ -47,9 +48,14 @@ export default Object.create({
 
 function serializeObject(obj, depth = 0) {
     if (obj == null) return obj
+    if (depth >= 5) {
+        // console.warn("Reached maximum serialization depth")
+        // console.trace()
+        return "..."
+    }
 
     if (Array.isArray(obj)) {
-        return obj.map(serializeObject)
+        return obj.map(o => serializeObject(o, depth + 1))
     } else if (obj.__structId) { // fixme. make more difined
         return {
             Contents: serializeObject(obj.Contents),
@@ -60,11 +66,13 @@ function serializeObject(obj, depth = 0) {
     } else if (typeof obj === 'object') {
         const s = {}
         for (const p in obj) {
-            s[p] = depth >= 5 ? "..." : serializeObject(obj[p], depth + 1)
+            s[p] = serializeObject(obj[p], depth + 1)
         }
         return s
+    } else if (isPrimitive(obj)) {
+        return String(obj)
     } else {
-        return obj
+        return "???"
     }
 }
 
