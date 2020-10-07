@@ -1,3 +1,5 @@
+const doSkipFile = require("./doSkipFile")
+
 const extractArgumentName = require("./extractArgumentName").default
 const template = require("@babel/template").default
 
@@ -44,13 +46,7 @@ module.exports = function transform(babel) {
 function prependWatchToBody(t, id, path, state) {
     const line = path.node.loc && path.node.loc.start.line || -1
 
-    if (state.file.opts.filename.includes('/correct-js/src/function') ||
-        (id && id.name.startsWith("_") && line === -1) ||
-        // fixme. Logger gets into an infinite loop with Contents
-        state.file.opts.filename.includes('/correct-js/src/struct/buildStruct') ||
-        state.file.opts.filename.includes('/correct-js/src/struct/contents') ||
-        state.file.opts.filename.includes('/correct-js/src/struct/protect')
-    ) return
+    if (doSkipFile(state) || (id && id.name.startsWith("_") && line === -1)) return
 
     const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
     const params = path.node.params
