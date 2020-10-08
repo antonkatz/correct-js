@@ -72,9 +72,10 @@ function makeCallable(factoryStruct) {
 
     factory.mixWith = factoryStruct.mixWith.bind(factoryStruct)
     factory.mix = factoryStruct.mix.bind(factoryStruct)
+
     // todo
     // factory.addCompanionOps
-    factory.fromContents = factoryStruct.fromContents
+    factory.fromContents = factoryStruct.fromContents.bind(factoryStruct)
     factory.__factory = factoryStruct
 
     return factory
