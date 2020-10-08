@@ -5,6 +5,7 @@ const fs = require('fs')
 var fifo = require('@stdlib/utils/fifo')
 var isFunction = require('@stdlib/assert/is-function')
 var isPrimitive = require('@stdlib/assert/is-primitive')
+var isSymbol = require('@stdlib/assert/is-symbol')
 
 export default Object.create({
     // beforeRun: deleteLogs(),
@@ -70,7 +71,7 @@ function serializeObject(obj, depth = 0) {
         }
         return s
     } else if (isPrimitive(obj)) {
-        return String(obj)
+        return isSymbol(obj) ? String(obj) : obj
     } else {
         return "???"
     }
