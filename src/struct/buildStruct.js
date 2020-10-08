@@ -1,9 +1,10 @@
-import protect             from "./protect"
+import protect             from "./protect/protect"
 import checkContents       from "./checkContents"
 import checkInitialization from "./checkInitialization"
 import {isFunction}        from '@stdlib/assert'
 import buildContentsGetter from "./contents/buildContentsGetter"
 import {nullify}           from "./initialization/nullifyStruct"
+import protectPromise      from "./protect/protectPromise"
 
 /** Creates a new struct given the shape of the data (aka contents) that it holds and the operations that can be performed on those contents.
  *
@@ -62,9 +63,9 @@ function initialize(struct, initializer, defaultContents) {
         if (ready?.then) {
             const p = Promise.resolve(ready)
             const n = p.then(nullify(?, struct))
-            return n.then(checkInitializationOpt(?, defaultContents)).then(protectOpt)
+            return n.then(checkInitializationOpt(?, defaultContents)).then(protectOpt) |> protectPromiseOpt
         } else {
-            return nullify(ready, struct) |> checkInitializationOpt(?, defaultValue) |> protectOpt
+            return nullify(ready, struct) |> checkInitializationOpt(?, defaultContents) |> protectOpt
         }
     } else {
         return checkInitializationOpt(struct, defaultContents) |> protectOpt
@@ -79,6 +80,14 @@ function protectOpt(struct, noSet = true) {
         return protect(struct, noSet)
     } else {
         return struct
+    }
+}
+
+function protectPromiseOpt(p) {
+    if (!IS_PROD) {
+        return protectPromise(p)
+    } else {
+        return p
     }
 }
 
