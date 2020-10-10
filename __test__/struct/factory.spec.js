@@ -22,6 +22,10 @@ describe("Factory", () => {
         }).toBeFalsy()
     })
 
+    test("should guard against extra values", () => {
+        expect(() => mixedF({nonExistent: 1})).toThrow("Extra key")
+    })
+
     // test("should be able to check if a struct is its child", () => {
     //     expect(F.is(TestStruct)).toBeFalsy()
     //

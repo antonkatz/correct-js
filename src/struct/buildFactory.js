@@ -23,8 +23,10 @@ export default function buildFactory(defaultContents, operators,
                     factory: this,
                     additionalPrototype,
                     postCreate(struct) {
-                        for (const [k,v] of Object.entries(struct.$)) {
-                            struct.$[k] = v.bind(struct)
+                        if (additionalPrototype.$) {
+                            for (const [k, v] of Object.entries(struct.$)) {
+                                struct.$[k] = v.bind(struct)
+                            }
                         }
                         return struct
                     }
@@ -32,7 +34,7 @@ export default function buildFactory(defaultContents, operators,
         },
 
         mixWith(other) {
-            this.mix(other.__factory.defaultContents, other.__factory.operators, other.__factory.initializer)
+            return this.mix(other.__factory.defaultContents, other.__factory.operators, other.__factory.initializer)
         },
 
         mix(oDefaultContents, oOperators, oInitializer) {
