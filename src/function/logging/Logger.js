@@ -48,32 +48,37 @@ export default Object.create({
 })
 
 function serializeObject(obj, depth = 0) {
-    if (obj == null) return obj
-    if (depth >= 5) {
-        // console.warn("Reached maximum serialization depth")
-        // console.trace()
-        return "..."
-    }
+    try {
+        if (obj == null) return obj
+        if (depth >= 5) {
+            // console.warn("Reached maximum serialization depth")
+            // console.trace()
+            return "..."
+        }
 
-    if (Array.isArray(obj)) {
-        return obj.map(o => serializeObject(o, depth + 1))
-    } else if (obj.__structId) { // fixme. make more difined
-        return {
-            Contents: serializeObject(obj.Contents),
-            Methods: Object.keys(Object.getPrototypeOf(obj))
+        if (Array.isArray(obj)) {
+            return obj.map(o => serializeObject(o, depth + 1))
+        } else if (obj.__structId) { // fixme. make more difined
+            return {
+                Contents: serializeObject(obj.Contents, depth + 1),
+                Methods: Object.keys(Object.getPrototypeOf(obj))
+            }
+        } else if (isFunction(obj)) {
+            return "Function"
+        } else if (typeof obj === 'object') {
+            const s = {}
+            for (const p in obj) {
+                s[p] = serializeObject(obj[p], depth + 1)
+            }
+            return s
+        } else if (isPrimitive(obj)) {
+            return isSymbol(obj) ? String(obj) : obj
+        } else {
+            return "???"
         }
-    } else if (isFunction(obj)) {
-        return "Function"
-    } else if (typeof obj === 'object') {
-        const s = {}
-        for (const p in obj) {
-            s[p] = serializeObject(obj[p], depth + 1)
-        }
-        return s
-    } else if (isPrimitive(obj)) {
-        return isSymbol(obj) ? String(obj) : obj
-    } else {
-        return "???"
+    } catch (e) {
+        console.warn("Failed to serialize", e)
+        throw e
     }
 }
 
