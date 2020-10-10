@@ -22,6 +22,6 @@ export default function (contents, defaultContent = null) {
     }
 
     if (missingKeys && missingKeys.size > 0) {
-        throw new TypeError(`Struct is missing content keys: ${missingKeys}`)
+        throw new TypeError(`Struct is missing content keys: ${Array.from(missingKeys)}`)
     }
 }

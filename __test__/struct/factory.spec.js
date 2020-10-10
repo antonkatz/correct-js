@@ -3,7 +3,7 @@ import buildFactory from "../../src/struct/buildFactory"
 describe("Factory", () => {
     const F1 = buildFactory({value: 1}, {})
     const F2 = buildFactory({prime: true}, {reset() {this.prime = false}})
-    const mixedF = F1.mixin(F2)
+    const mixedF = F1.mixWith(F2)
 
 
     test("should produce a valid struct", () => {

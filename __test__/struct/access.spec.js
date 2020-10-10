@@ -22,6 +22,9 @@ describe("Access patterns on a struct", () => {
             }
         )
 
+        console.log(TestStruct.Contents)
         expect(TestStruct.Contents).toEqual({value: 0})
+        S.incr()
+        expect(S.Contents.value).toBe(1)
     })
 })
