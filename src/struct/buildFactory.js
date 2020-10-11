@@ -4,6 +4,8 @@ import bifurcateBy                        from "@stdlib/utils/bifurcate-by"
 import importContents                     from "./contents/importContents"
 import {shouldNullifyStruct}              from "./initialization/nullifyStruct"
 import {protectOperationsOpt, protectOpt} from "./protect/optionals"
+import getDefaults                        from "./contents/getDefaults"
+import buildContentsWithDefaults          from "./contents/buildContentsWithDefaults"
 
 export default function buildFactory(defaultContents, operators,
                                      initializer = noop,
@@ -13,11 +15,12 @@ export default function buildFactory(defaultContents, operators,
     }, {
         build(contents) {
             // todo make sure that shape matches between contents and the defaults
+            // DONEish, todo make sure that contents aren't overwriting vars starting with $
 
-            return buildStruct({
-                    ...this.defaultContents,
-                    ...contents
-                }, this.operators, this.initializer,
+            return buildStruct(
+                buildContentsWithDefaults(contents, this.defaultContents),
+                this.operators,
+                this.initializer,
                 {
                     typeIds: typeIds.length > 0 ? typeIds : this.__isTypeOf,
                     factory: this,
@@ -60,6 +63,9 @@ export default function buildFactory(defaultContents, operators,
                 return [k, v]
             }))
                 |> Object.fromEntries
+
+            // fixme do not allow setting of variables that belong to the other layer
+
 
             return buildFactory(
                 {...combinedDefaultContents},
@@ -107,8 +113,9 @@ export default function buildFactory(defaultContents, operators,
 // todo. Static ops / non-object ops can be added onto the function or produced by Factory(factory_child) = static ops
 
 function makeCallable(factoryStruct) {
+    const build = factoryStruct.build.bind(factoryStruct)
     function factory(contents = {}) {
-        return factoryStruct.build(contents)
+        return build(contents)
     }
 
     factory.mixWith = factoryStruct.mixWith.bind(factoryStruct)

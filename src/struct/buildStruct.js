@@ -2,6 +2,7 @@ import {isFunction}                                                             
 import buildContentsGetter                                                       from "./contents/buildContentsGetter"
 import {nullify}                                                                 from "./initialization/nullifyStruct"
 import {checkContentsOpt, checkInitializationOpt, protectOpt, protectPromiseOpt} from "./protect/optionals"
+import getDefaults                                                               from "./contents/getDefaults"
 
 /** Creates a new struct given the shape of the data (aka contents) that it holds and the operations that can be performed on those contents.
  *
@@ -10,7 +11,8 @@ import {checkContentsOpt, checkInitializationOpt, protectOpt, protectPromiseOpt}
 export default function (contents, operators, initializer = null,
                          {typeIds = [], factory = null,
                              additionalPrototype = {}, postCreate = (struct) => struct} = {}) {
-    const defaultContents = factory ? factory.defaultContents : null
+    // defaults might be a function
+    const defaultContents = factory ? getDefaults(factory.defaultContents) : null
     checkContentsOpt(contents, defaultContents)
 
     const structId = Symbol()
