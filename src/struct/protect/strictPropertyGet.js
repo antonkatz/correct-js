@@ -15,6 +15,10 @@ export function strictPropertyGet(target, name, receiver, errorMsg = 'Struct has
             let skip = relevantTrace.length === 0
             for (const line of relevantTrace) {
                 if (line.includes('/')) {
+                    // fixme this skips it for the lib itself
+                    if (line.includes('/correct-js/')) {
+                        continue
+                    }
                     // checking that the first line is external
                     skip = line.includes('/node_modules/') || line.includes("internal/process")
                     break
