@@ -15,7 +15,6 @@ export default function (contents, defaultContent = null) {
         if (k === "$" || k === "_" || k === "__") throw new SyntaxError(`Key name cannot be only '$' or '_' or '__'`)
         if (defaultContent) {
             if (!(k in defaultContent)) throw new TypeError(`Extra key in struct's content:${k}`)
-            if (k.startsWith("$")) throw new TypeError(`Key "${k}" is defined at instantiation, thus it cannot be passed in as an arg (to struct constructor)`)
             if (v != null || defaultContent[k] != null) missingKeys.delete(k)
         } else {
             if (v == null) throw new TypeError(`Struct's contents must have only defined values, since it has no defaults. Error on key $${k}`)
