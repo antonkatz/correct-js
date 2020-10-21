@@ -46,12 +46,14 @@ module.exports = function transform(babel) {
 function prependWatchToBody(t, id, path, state) {
     const line = path.node.loc && path.node.loc.start.line || -1
 
+    console.log(state.file.opts.filename, '???')
+
     if (doSkipFile(state) || (id && id.name.startsWith("_") && line === -1)) return
 
     const fileId = state.file.opts.filename.replace(state.file.opts.root, '.')
     const params = path.node.params
 
-    // console.log('\n\n', fileId, '>>>')
+    console.log('\n\n', fileId, '>>>')
 
     const paramNames = params.flatMap(extractArgumentName)
     // console.log(paramNames)

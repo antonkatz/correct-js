@@ -46,7 +46,6 @@ export default function (contents, operators, initializer = null,
         // bindAll |>
         Object.assign(?, properties) |>
         postCreate |>
-        protectOpt(?, false) |>
         initialize(?, initializer, defaultContents)
 }
 
@@ -55,7 +54,7 @@ function initialize(struct, initializer, defaultContents) {
     if (initializer) {
         // important, otherwise will be bound to the factory
         // struct.__initializer = struct.__initializer.bind(struct)
-        const ready = initializer.bind(struct)(struct)
+        const ready = initializer.bind(protectOpt(struct, false))(struct)
         if (ready?.then) {
             const p = Promise.resolve(ready)
             const n = p.then(nullify(?, struct))

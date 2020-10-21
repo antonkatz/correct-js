@@ -5,7 +5,7 @@ export function combineDefaultContents_slack(thisDefaults, otherDefaults) {
     const _oD = getDefaults(otherDefaults)
 
     return Object.keys(_tD)
-        .concat(_oD)
+        .concat(Object.keys(_oD))
         |> (ks => new Set(ks))
         |> Array.from
         |> (ks => ks.map(k => {

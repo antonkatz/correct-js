@@ -42,7 +42,7 @@ function strictGet(target, name, receiver) {
     let v = strictPropertyGet(target, name, receiver)
 
     // the struct check is a must, otherwise is function fails
-    if (!isStruct(target) && isFunction(v)) {
+    if (!isStruct(v) && isFunction(v)) {
         const protoKeys = Object.keys(Object.getPrototypeOf(target))
         if (protoKeys.includes(name)) {
             // only with prototype functions

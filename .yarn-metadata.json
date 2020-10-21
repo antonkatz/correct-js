@@ -1,0 +1,51 @@
+{
+  "manifest": {
+    "name": "@onest.network/correct-js",
+    "version": "0.1.1",
+    "description": "CorrectJS helps you write cleaner, maintainable code and spot bugs early on. It tries to provide all the benefits of static-typing (plus more) without the extra overhead. It does this through the magic of **dynamic analysis**: because many bugs can only be caught by running the code.",
+    "main": "lib/index.js",
+    "types": "typings/index.d.ts",
+    "scripts": {
+      "test": "jest",
+      "build": "babel src -d lib"
+    },
+    "keywords": [],
+    "author": {
+      "name": "Anton Kats"
+    },
+    "license": "ISC",
+    "dependencies": {
+      "@babel/template": "^7.10.4",
+      "@stdlib/stdlib": "0.0.92",
+      "recursive-readdir": "^2.2.2"
+    },
+    "devDependencies": {
+      "@babel/cli": "^7.11.6",
+      "@babel/plugin-proposal-do-expressions": "^7.10.4",
+      "@babel/plugin-proposal-export-default-from": "^7.10.4",
+      "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
+      "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+      "@babel/plugin-proposal-partial-application": "^7.10.5",
+      "@babel/plugin-proposal-pipeline-operator": "^7.10.5",
+      "@babel/preset-env": "^7.11.5",
+      "babel-jest": "^26.3.0",
+      "babel-plugin-root-import": "^6.5.0",
+      "jest": "^26.4.2",
+      "path": "^0.12.7"
+    },
+    "_registry": "npm",
+    "_loc": "/home/anton/.cache/yarn/v6/npm-@onest-network-correct-js-0.1.1-f7f8f0da-a3f8-406f-817a-4835c6bd3f89-1602642141948/node_modules/@onest.network/correct-js/package.json",
+    "readmeFilename": "README.md",
+    "readme": "# Correct JS\n\nCorrectJS helps you write cleaner, maintainable code and spot bugs early on.\nIt tries to provide all the benefits of static-typing (plus more) without the extra overhead.\nIt does this through the magic of **dynamic analysis**: because many bugs can only be caught by running the code. \n\nThe project is split into two parts: *Babel plugin* and the *lib*.\n\nTo install\n```\n    npm install https://github.com/antonkatz/correct-js.git\n```\n\n## Babel plugin\n- [x] Generate warnings when a function is called with a variable/non-expected number of arguments\n- [ ] Generate warnings when the shape of the given arguments changes\n- [ ] Generate warnings when the shape of the return value changes in the same function\n- [ ] Create execution logs:\n    - [x] logging function arguments\n    - [ ] logging internal function variables\n    - [ ] logging return values\n\nTo enable the plugin, add the following to your babel config\n```$js\n  \"plugins\": [\n    \"@onest.network/correct-js/babel/argument-watch-plugin\"\n  ]\n```\n\nThe logs will be automatically created, besides the source files in which the functions are defined, and will have the extension `.cjslog`\nTo remove the logs a convenience script is provided (best run before executions/tests). Add following to your *package.json*:\n```\n\"scripts\": {\n    \"clear-logs\": \"node node_modules/@onest.network/correct-js/babel/delete-logs.js\"\n  }  \n```\n\nAdding `CORRECT_JS_STRICT=false` to your env will log warnings instead of throwing errors\n\n#### Current limitations\nThe provided build is made for nodejs and does not work in the browser.\nYou can still run your tests and thus get the benefits.  \n\n## Lib\n\nRevolves around providing an opinionated way to encapsulate data objects \n- [x] preventing accidental access to non-existent values\n- [x] preventing state/data mutation outside of internal functions\n- [x] preventing initialization with missing data\n- [ ] ease of serialization/export of parts of encapsulated data/state\n\nTo prevent checks during runtime, add `CORRECT_JS_ENV=production` or `NODE_ENV=production` to your env\n\n## Performance\nWhen building and running with `NODE_ENV=production` the *Babel plugin* is disabled,\nand majority of correctness checks inside the *lib* as well\n",
+    "licenseText": "This is free and unencumbered software released into the public domain.\n\nAnyone is free to copy, modify, publish, use, compile, sell, or\ndistribute this software, either in source code form or as a compiled\nbinary, for any purpose, commercial or non-commercial, and by any\nmeans.\n\nIn jurisdictions that recognize copyright laws, the author or authors\nof this software dedicate any and all copyright interest in the\nsoftware to the public domain. We make this dedication for the benefit\nof the public at large and to the detriment of our heirs and\nsuccessors. We intend this dedication to be an overt act of\nrelinquishment in perpetuity of all present and future rights to this\nsoftware under copyright law.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR\nOTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,\nARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.\n\nFor more information, please refer to <https://unlicense.org>\n\n"
+  },
+  "artifacts": [],
+  "remote": {
+    "type": "copy",
+    "registry": "npm",
+    "hash": "0ff045f9-414c-482d-b42d-24274a931b61-1603164089118",
+    "reference": "/home/anton/projects/harbr/code/correct-js"
+  },
+  "registry": "npm",
+  "hash": "0ff045f9-414c-482d-b42d-24274a931b61-1603164089118"
+}

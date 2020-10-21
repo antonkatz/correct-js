@@ -1,3 +1,3 @@
 export default function (struct) {
-    return !!struct.__structId
+    return !!struct?.__structId
 }

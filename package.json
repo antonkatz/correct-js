@@ -13,8 +13,10 @@
   "license": "ISC",
   "dependencies": {
     "@babel/template": "^7.10.4",
-    "@stdlib/stdlib": "0.0.92",
     "recursive-readdir": "^2.2.2"
+  },
+  "peerDependencies": {
+  	"@stdlib/stdlib": "0.0.92"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",

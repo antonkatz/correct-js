@@ -58,6 +58,8 @@ function serializeObject(obj, depth = 0) {
 
         if (Array.isArray(obj)) {
             return obj.map(o => serializeObject(o, depth + 1))
+        } else if (isFunction(obj?.then)) { // fixme. make more difined
+            return "*Promise"
         } else if (obj.__structId) { // fixme. make more difined
             return {
                 Contents: serializeObject(obj.Contents, depth + 1),

@@ -9,6 +9,7 @@ const mapValues = require( '@stdlib/utils/map-values' );
 
 export function protectOpt(struct, noSet = true, {setOnly = [false]} = {}) {
     if (!IS_PROD && struct !== undefined) {
+        // fixme extract proxy around it
         return protect(struct, noSet, {setOnly})
     } else {
         return struct

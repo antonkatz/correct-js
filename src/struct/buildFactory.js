@@ -6,8 +6,8 @@ import {shouldNullifyStruct, shouldNullifyStructPromise} from "./initialization/
 import {protectOperationsOpt, protectOpt}                from "./protect/optionals"
 import getDefaults                        from "./contents/getDefaults"
 import buildContentsWithDefaults          from "./contents/buildContentsWithDefaults"
-import checkPreBuildContents              from "./contents/checkPreBuildContents"
-import {combineDefaultContents_strict}    from "./contents/combineDefaults"
+import checkPreBuildContents                                         from "./contents/checkPreBuildContents"
+import {combineDefaultContents_slack, combineDefaultContents_strict} from "./contents/combineDefaults"
 
 export default function buildFactory(defaultContents, operators,
                                      initializer = noop,
@@ -58,7 +58,7 @@ export default function buildFactory(defaultContents, operators,
 
             // if the top layer wants access to a bottom layer vars, but doesn't want to change their defaults, then it
             // should set its own default as `undef`
-            const combinedDefaultContents = combineDefaultContents_strict(_thisDefaults, _otherDefaults)
+            const combinedDefaultContents = combineDefaultContents_slack(_thisDefaults, _otherDefaults)
 
             return buildFactory(
                 {...combinedDefaultContents},
@@ -105,6 +105,8 @@ function makeCallable(factoryStruct) {
     factory.mixWith = factoryStruct.mixWith.bind(factoryStruct)
     factory.mix = factoryStruct.mix.bind(factoryStruct)
     factory.layer = factoryStruct.mix.bind(factoryStruct)
+
+    factory.curry = (preContents = {}) => (postContents = {}) => factory({...preContents, ...postContents})
 
     // todo
     // factory.addCompanionOps

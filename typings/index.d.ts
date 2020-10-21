@@ -11,6 +11,8 @@ export interface Factory<C, Ops extends {[k: string]: (this: Struct<C, Ops>, ...
     // fixme. addIres in return should be conditional, etc
     mix<addC, addOps, addIres>(defaultContents: {}, operators: {}, initializer: (this: Struct<C, Ops>) => addIres): Factory<C & addC, Ops & addOps, addIres>
     layer<addC, addOps, addIres>(defaultContents: {}, operators: {}, initializer: (this: Struct<C, Ops>) => addIres): Factory<C & addC, Ops & addOps, addIres>
+
+    curry(contents: {}): (postContents: {}) => Ires extends Promise<any> ? Promise<Struct<C, Ops> | undefined> : (Struct<C, Ops> | undefined)
 }
 
 export function buildFactory<C extends {}, Ops extends {[k: string]: (this: Struct<C, Ops>, ...rest: any[] | undefined) => any}, Ires extends (any | Promise<any>)>(
